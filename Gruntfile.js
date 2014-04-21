@@ -162,10 +162,6 @@ module.exports = function (grunt) {
           'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js',
           'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js'
         ]
-      },
-      sass: {
-        src: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-        ignorePath: '<%= yeoman.app %>/bower_components/'
       }
     },
 
