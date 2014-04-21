@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> 
 <html 
 	class="no-js"
-	ng-app="round"> <!--<![endif]-->
+	ng-app="round"
+	ng-controller="MainCtrl"> <!--<![endif]-->
 <head>
 	<meta charset="utf-8">
 	<title>Round</title>
@@ -49,6 +50,7 @@
 	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 	<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+	<script src="bower_components/underscore/underscore.js"></script>
 	<!-- endbower -->
 	<!-- endbuild -->
 
@@ -57,6 +59,7 @@
 	<script src="scripts/app-config.js"></script>
 	<script src="scripts/services/round-sett.js"></script>
 	<script src="scripts/controllers/main.js"></script>
+	<script src="modules/analytics/analytics.js"></script>
 	<!-- endbuild -->
 </body>
 </html>

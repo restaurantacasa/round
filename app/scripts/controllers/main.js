@@ -1,10 +1,6 @@
 'use strict';
 
 angular.module('round')
-  .controller('MainCtrl', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-  });
+.controller('MainCtrl', function ($scope, rAnalytics) {
+	$scope.analytics = rAnalytics;
+});
