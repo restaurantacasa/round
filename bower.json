@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "main": [
     "./app/scripts/app.js",
+    "./app/scripts/app-sett.js",
     "./app/modules/analytics/analytics.js"
   ],
   "dependencies": {

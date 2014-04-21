@@ -4,7 +4,7 @@ angular.module('round')
 .service('rAnalytics', function Analytics($window,
 																					$rootScope,
 																					$location,
-																					roundSett	) {
+																					RoundSett	) {
 	var that = this;
 
 	initialize()
@@ -15,7 +15,7 @@ angular.module('round')
 	var trackers;
 
 	//pick non-duplicates from accounts
-	var accounts = _(roundSett.analytics.GoogleAnalytics.accounts).uniq(function (account) {
+	var accounts = _(RoundSett.analytics.GoogleAnalytics.accounts).uniq(function (account) {
 		return account.id;
 	});
 
