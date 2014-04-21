@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('roundApp')
+angular.module('round')
 .config(function ($stateProvider, $urlRouterProvider) {
 
 	$urlRouterProvider.otherwise('/');

@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-.module('roundApp', [
+.module('round', [
 	// 'ngCookies',
 	// 'ngResource',
 	// 'ngSanitize',
