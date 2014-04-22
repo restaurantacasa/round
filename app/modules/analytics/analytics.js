@@ -7,41 +7,17 @@ angular.module('round')
 																					RoundSett	) {
 	var that = this;
 
-	initialize()
+	var accounts;
 
-	//google analytics
-	var ga = $window.ga;
-
-	var trackers;
-
-	//pick non-duplicates from accounts
-	var accounts = _(RoundSett.analytics.GoogleAnalytics.accounts).uniq(function (account) {
-		return account.id;
-	});
-
-	//create trackers
-	_(accounts).each(function (account) {
-		ga('create', account.id, {
-			name: account.name
-		});
-	});
-
-	//cache all trackers once the analytics.js library is loaded
-	ga(function () {
-		trackers = ga.getAll();
-	});
-
-	$rootScope.$on('$stateChangeStart', function() {
-		that.set('page', $location.url());
-	});
-
+	initialize();
 
 	this.set = function () {
 		//convert args to array
 		var args = Array.prototype.slice.call( arguments, 0 );
 
-		_(trackers).each(function (tracker) {
-			tracker.set.apply(tracker, args);
+		_(accounts).each(function (account) {
+			args.unshift(account.name ? account.name + '.set' : 'set');
+			ga.apply(that, args);
 		});
 	};
 
@@ -49,8 +25,9 @@ angular.module('round')
 		//convert args to array
 		var args = Array.prototype.slice.call( arguments, 0 );
 
-		_(trackers).each(function (tracker) {
-			tracker.send.apply(tracker, args);
+		_(accounts).each(function (account) {
+			args.unshift(account.name ? account.name + '.send' : 'send');
+			ga.apply(that, args);
 		});
 	};
 
@@ -59,6 +36,7 @@ angular.module('round')
 			exDescription: msg + '\n ○ ' + trace
 		});
 	};
+
 
 	function initialize () {
 		(function(i, s, o, g, r, a, m) {
@@ -72,6 +50,20 @@ angular.module('round')
 			a.src = g;
 			m.parentNode.insertBefore(a, m)
 		})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+		//pick non-duplicates from accounts
+		accounts = 
+			_(RoundSett.analytics.GoogleAnalytics.accounts).uniq(function (account) {
+			return account.id;
+		});
+
+		//create trackers
+		_(accounts).each(function (account) {
+			ga('create', account.id, {
+				name: account.name
+			});
+		});
+			
 	}
 
 
