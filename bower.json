@@ -4,7 +4,8 @@
   "main": [
     "./app/scripts/app.js",
     "./app/scripts/app-sett.js",
-    "./app/modules/analytics/analytics.js"
+    "./app/modules/analytics/analytics.js",
+    "./app/modules/directives/include.js"
   ],
   "dependencies": {
     "angular": "1.2.15",
