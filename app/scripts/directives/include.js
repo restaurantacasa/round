@@ -6,8 +6,8 @@ angular.module('round')
 		restrict: 'A',
 		replace: true,
 		templateUrl: function (element, attrs) {
-			var prefix = $rootScope.$eval(attrs.birIncludePrefix);
-			return prefix ? prefix + attrs.birInclude : attrs.birInclude;
+			var prefix = $rootScope.$eval(attrs.rIncludePrefix);
+			return prefix ? prefix + attrs.rInclude : attrs.rInclude;
 		}
 	};
 });
