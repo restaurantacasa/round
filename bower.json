@@ -5,7 +5,8 @@
     "./app/scripts/app.js",
     "./app/scripts/app-sett.js",
     "./app/scripts/directives/include.js",
-    "./app/modules/analytics/analytics.js"
+    "./app/modules/analytics/analytics.js",
+    "./app/styles/bs-break-stack.scss"
   ],
   "dependencies": {
     "angular": "1.2.15",
