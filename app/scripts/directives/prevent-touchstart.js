@@ -6,7 +6,7 @@
  * @description
  * # rPreventTouchstart
  */
-angular.module('roundApp')
+angular.module('round')
 .directive('rPreventTouchstart', function () {
 	return {
 		restrict: 'A',
