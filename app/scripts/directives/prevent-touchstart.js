@@ -12,7 +12,9 @@ angular.module('round')
 		restrict: 'A',
 		link: function postLink(scope, element) {
 			element.on('touchstart', function (e) {
-				e.preventDefault();
+				if (e.originalEvent.srcElement === element) {
+					e.preventDefault();
+				}
 			});
 		}
 	};
