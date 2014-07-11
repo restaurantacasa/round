@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc service
- * @name roundApp.util
+ * @name Round.rUtil
  * @description
  * # util
- * Service in the roundApp.
+ * Service in the Round.
  */
-angular.module('roundApp')
+angular.module('Round')
 .service('rUtil', function Util() {
 
 	this.has = function (suspect, members) {
