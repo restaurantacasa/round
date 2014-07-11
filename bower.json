@@ -6,6 +6,7 @@
     "./app/scripts/app-sett.js",
     "./app/scripts/directives/include.js",
     "./app/scripts/directives/prevent-touchstart.js",
+    "./app/scripts/services/util.js",
     "./app/modules/analytics/analytics.js",
     "./app/styles/bs-break-stack.scss"
   ],
