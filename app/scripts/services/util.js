@@ -7,7 +7,7 @@
  * # util
  * Service in the Round.
  */
-angular.module('Round')
+angular.module('round')
 .service('rUtil', function Util() {
 
 	this.has = function (suspect, members) {
