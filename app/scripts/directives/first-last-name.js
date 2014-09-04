@@ -6,7 +6,7 @@
  * @description
  * # firstLastName
  */
-angular.module('roundApp')
+angular.module('round')
 .directive('rFirstLastName', function (rUtil) {
 	return {
 		restrict: 'A',
