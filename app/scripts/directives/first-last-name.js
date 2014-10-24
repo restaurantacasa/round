@@ -31,9 +31,9 @@ angular.module('round')
 			});
 
 			ctrl.$formatters.unshift(function (val) {
+
 				return (
-					(val[firstNameKey] || '') +
-					' ' +
+					(val[firstNameKey] ? val[firstNameKey] + ' ' : '') +
 					(val[lastNameKey] || '')
 				);
 			});
