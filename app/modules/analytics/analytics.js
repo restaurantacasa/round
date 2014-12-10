@@ -19,8 +19,9 @@ angular.module('round')
 		var args = Array.prototype.slice.call( arguments, 0 );
 
 		_(accounts).each(function (account) {
-			args.unshift(account.name ? account.name + '.set' : 'set');
-			$window.ga.apply(that, args);
+			var localArgs = angular.copy(args);
+			localArgs.unshift(account.name ? account.name + '.set' : 'set');
+			$window.ga.apply(that, localArgs);
 		});
 	};
 
@@ -35,11 +36,29 @@ angular.module('round')
 		});
 	};
 
+
 	this.sendException = function (msg, trace) {
 		that.send('exception', {
 			exDescription: msg + '\n ○ ' + trace
 		});
 	};
+
+
+
+	/*==================================
+	=            Shorthands            =
+	==================================*/
+
+	this.pageview = function (page) {
+		that.set('page', page);
+		that.send('pageview', {
+			page: page
+		});
+	};
+
+	/*-----  End of Shorthands  ------*/
+
+
 
 
 	function initialize () {
