@@ -1,10 +1,13 @@
 'use strict';
 
 angular.module('round')
-.service('rAnalytics', function Analytics($window,
-																					$rootScope,
-																					$location,
-																					RoundSett	) {
+.service('rAnalytics', function Analytics(
+	$window,
+	$rootScope,
+	$location,
+	RoundSett
+) {
+
 	var that = this;
 
 	var accounts;
@@ -17,7 +20,7 @@ angular.module('round')
 
 		_(accounts).each(function (account) {
 			args.unshift(account.name ? account.name + '.set' : 'set');
-			ga.apply(that, args);
+			$window.ga.apply(that, args);
 		});
 	};
 
@@ -26,8 +29,9 @@ angular.module('round')
 		var args = Array.prototype.slice.call( arguments, 0 );
 
 		_(accounts).each(function (account) {
-			args.unshift(account.name ? account.name + '.send' : 'send');
-			ga.apply(that, args);
+			var localArgs = angular.copy(args);
+			localArgs.unshift(account.name ? account.name + '.send' : 'send');
+			$window.ga.apply(that, localArgs);
 		});
 	};
 
@@ -59,7 +63,7 @@ angular.module('round')
 
 		//create trackers
 		_(accounts).each(function (account) {
-			ga('create', account.id, {
+			$window.ga('create', account.id, {
 				name: account.name
 			});
 		});
