@@ -16,7 +16,7 @@ angular.module('round')
 		restrict: 'A',
 		link: function postLink(scope, element, attrs) {
 
-			var delay = parseInt(attrs.roundCurtain, 10) || DEFAULT_DELAY;
+			var delay = parseInt(attrs.rCurtain, 10) || DEFAULT_DELAY;
 
 			scope.loaded = false;
 			$timeout(function () {
