@@ -10,6 +10,7 @@
     "./app/scripts/directives/disable-animation.js",
     "./app/scripts/directives/first-last-name.js",
     "./app/scripts/directives/curtain.js",
+    "./app/scripts/directives/repeat-done.js",
     "./app/scripts/services/util.js",
     "./app/modules/analytics/analytics.js",
     "./app/styles/bs-break-stack.scss"
