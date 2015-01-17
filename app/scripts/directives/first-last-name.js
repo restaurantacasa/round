@@ -30,7 +30,9 @@ angular.module('round')
 				return ctrl.$modelValue;
 			});
 
-			ctrl.$formatters.unshift(function (val) {
+			//has to change to push since ng 1.3
+			//http://stackoverflow.com/a/26565487/592641
+			ctrl.$formatters.push(function (val) {
 
 				return (
 					(val[firstNameKey] ? val[firstNameKey] + ' ' : '') +
