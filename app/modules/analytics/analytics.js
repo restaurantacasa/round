@@ -35,14 +35,14 @@ angular.module('round')
 		});
 	}
 
-	this.runCommand = function (command, argsObj) {
+	function runCommand (command, argsObj) {
 		window.dataLayer = window.dataLayer || [];
 		window.dataLayer.push({
 		  [command]: argsObj
 		});
 	}
 
-	this.initialize = function () {
+	function initialize () {
 		const gaMeasurementId = sett.accounts[0].id;
 	  
 		// Crea un elemento de script para cargar la biblioteca gtag.js
