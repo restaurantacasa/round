@@ -1,20 +1,10 @@
 'use strict';
 
 angular.module('round')
-.service('rAnalytics', function Analytics(
-	$window,
-	$rootScope,
-	$location,
-	RoundSett
-) {
-
-	var that = this;
-
+.service('rAnalytics', function Analytics( RoundSett ) {
 	var sett = RoundSett.analytics.GoogleAnalytics;
-	var accounts;
 
 	initialize();
-
 
 	this.set = function () {
 		runCommand('set', arguments);
@@ -29,74 +19,47 @@ angular.module('round')
 		runCommand('ecommerce:' + args.shift(), args);
 	};
 
-	this.sendException = function (msg, trace) {
-		that.send('exception', {
-			exDescription: msg + '\n ○ ' + trace
-		});
-	};
-
-
-
-	/*==================================
-	=            Shorthands            =
-	==================================*/
-
-	this.pageview = function (page) {
-		that.set('page', page);
-		that.send('pageview', {
-			page: page
-		});
-	};
-
-	/*-----  End of Shorthands  ------*/
-
-
-	function runCommand (command, argsObj) {
-		var args = _.toArray(argsObj);
-		_(accounts).each(function (account) {
-			var localArgs = angular.copy(args);
-			localArgs.unshift(
-				account.name ?
-				account.name + '.' + command :
-				command
-			);
-			$window.ga.apply(that, localArgs);
+	this.sendException = function (description, isFatal = false) {
+		runCommand('event', {
+			event_category: 'Exception',
+			event_action: 'Exception Caught',
+			event_label: description,
+			non_interaction: true,
+			fatal: isFatal
 		});
 	}
 
-
-
-	function initialize () {
-		(function(i, s, o, g, r, a, m) {
-			i.GoogleAnalyticsObject = r;
-			i[r] = i[r] || function() {
-				(i[r].q = i[r].q || []).push(arguments);
-			}, i[r].l = 1 * new Date();
-			a = s.createElement(o),
-			m = s.getElementsByTagName(o)[0];
-			a.async = 1;
-			a.src = g;
-			m.parentNode.insertBefore(a, m);
-		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-		//pick non-duplicates from accounts
-		accounts =
-			_(sett.accounts).uniq(function (account) {
-			return account.id;
+	this.pageview = function(pagePath) {
+		runCommand('config', {
+		  page_path: pagePath,
 		});
-
-		//create trackers
-		_(accounts).each(function (account) {
-			$window.ga('create', account.id, {
-				name: account.name
-			});
-			if (account.enableEcommerce) {
-				$window.ga(account.name +'.require', 'ecommerce');
-			}
-		});
-
-
 	}
 
+	this.runCommand = function (command, argsObj) {
+		window.dataLayer = window.dataLayer || [];
+		window.dataLayer.push({
+		  [command]: argsObj
+		});
+	}
 
+	this.initialize = function () {
+		const gaMeasurementId = sett.accounts[0].id;
+	  
+		// Crea un elemento de script para cargar la biblioteca gtag.js
+		const script = document.createElement('script');
+		script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
+		script.async = true;
+	  
+		// Agrega un evento de carga para configurar la función gtag
+		script.addEventListener('load', () => {
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+	  
+		  gtag('config', gaMeasurementId);
+		});
+	  
+		// Agrega el script al final del elemento <head> en el HTML principal
+		document.head.appendChild(script);
+	  }
 });
