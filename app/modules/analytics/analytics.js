@@ -1,65 +1,58 @@
 'use strict';
 
-angular.module('round')
-.service('rAnalytics', function Analytics( RoundSett ) {
-	var sett = RoundSett.analytics.GoogleAnalytics;
+angular.module('round').service('rAnalytics', function Analytics(RoundSett) {
+  var sett = RoundSett.analytics.GoogleAnalytics;
 
-	initialize();
+  initialize();
 
-	this.set = function () {
-		runCommand('set', arguments);
-	};
+  this.set = function() {
+    gtag('set', property, value);
+  };
 
-	this.send = function () {
-		runCommand('send', arguments);
-	};
+  this.send = function() {
+    gtag('event', eventName, eventParams);
+  };
 
-	this.ecommerce = function () {
-		var args = _.toArray(arguments);
-		runCommand('ecommerce:' + args.shift(), args);
-	};
+  this.ecommerce = function() {
+    var args = _.toArray(arguments);
+    gtag('event','ecommerce:' + args.shift(), args);
+  };
 
-	this.sendException = function (description, isFatal = false) {
-		runCommand('event', {
-			event_category: 'Exception',
-			event_action: 'Exception Caught',
-			event_label: description,
-			non_interaction: true,
-			fatal: isFatal
-		});
-	}
+  this.sendException = function(description, isFatal = false) {
+    gtag('event','exception', {
+      event_category: 'Exception',
+      event_action: 'Exception Caught',
+      event_label: description,
+      non_interaction: true,
+      fatal: isFatal,
+    });
+  };
 
-	this.pageview = function(pagePath) {
-		runCommand('config', {
-		  page_path: pagePath,
-		});
-	}
+  this.pageview = function(pagePath, pageName) {
+    gtag('event','current_path', {
+      page_path: pagePath,
+      page_name: pageName ? pageName : ''
+    });
+  };
 
-	function runCommand (command, argsObj) {
-		window.dataLayer = window.dataLayer || [];
-		window.dataLayer.push({
-		  [command]: argsObj
-		});
-	}
+  function initialize() {
+    const gaMeasurementId = sett.accounts[0].id;
 
-	function initialize () {
-		const gaMeasurementId = sett.accounts[0].id;
-	  
-		// Crea un elemento de script para cargar la biblioteca gtag.js
-		const script = document.createElement('script');
-		script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
-		script.async = true;
-	  
-		// Agrega un evento de carga para configurar la función gtag
-		script.addEventListener('load', () => {
-		  window.dataLayer = window.dataLayer || [];
-		  function gtag(){dataLayer.push(arguments);}
-		  gtag('js', new Date());
-	  
-		  gtag('config', gaMeasurementId);
-		});
-	  
-		// Agrega el script al final del elemento <head> en el HTML principal
-		document.head.appendChild(script);
-	  }
+    const script = document.createElement('script');
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
+    script.async = true;
+
+    script.addEventListener('load', () => {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        window.dataLayer.push(arguments);
+      }
+      window.gtag = gtag;
+
+      gtag('js', new Date());
+      gtag('config', gaMeasurementId);
+    });
+
+    document.head.appendChild(script);
+  }
 });
