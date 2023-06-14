@@ -2,20 +2,20 @@
 
 angular.module('round').service('rAnalytics', function Analytics(RoundSett) {
   var sett = RoundSett.analytics.GoogleAnalytics;
+  var that = this;
 
   initialize();
 
-  this.set = function() {
-    gtag('set', property, value);
-  };
+	this.set = function () {
+		runCommand('set', arguments);
+	};
 
-  this.send = function() {
-    gtag('event', eventName, eventParams);
-  };
+	this.send = function () {
+		runCommand('send', arguments);
+	};
 
-  this.ecommerce = function() {
-    var args = _.toArray(arguments);
-    gtag('event','ecommerce:' + args.shift(), args);
+  this.ecommerce = function (transaction) {
+    gtag('event', 'purchase', transaction);
   };
 
   this.sendException = function(description, isFatal = false) {
@@ -35,23 +35,37 @@ angular.module('round').service('rAnalytics', function Analytics(RoundSett) {
     });
   };
 
+  function runCommand(command, argsObj) {
+    console.log('runCommand = ', command, argsObj);
+
+    var args = Object.values(argsObj);
+    sett.accounts.forEach(account => {
+      var localArgs = angular.copy(args);
+      localArgs.unshift(
+        account.name ?
+        account.name + '.' + command :
+        command
+      );
+      gtag.apply(that, localArgs);
+    });
+  }
+
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+
   function initialize() {
     const gaMeasurementId = sett.accounts[0].id;
+
+    window.dataLayer = [];
+    window.gtag = gtag;
+
+    gtag('js', new Date());
+    gtag('config', gaMeasurementId);
 
     const script = document.createElement('script');
     script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
     script.async = true;
-
-    script.addEventListener('load', () => {
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        window.dataLayer.push(arguments);
-      }
-      window.gtag = gtag;
-
-      gtag('js', new Date());
-      gtag('config', gaMeasurementId);
-    });
 
     document.head.appendChild(script);
   }
