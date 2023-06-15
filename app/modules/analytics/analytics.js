@@ -1,20 +1,10 @@
 'use strict';
 
-angular.module('round')
-.service('rAnalytics', function Analytics(
-	$window,
-	$rootScope,
-	$location,
-	RoundSett
-) {
+angular.module('round').service('rAnalytics', function Analytics(RoundSett) {
+  var sett = RoundSett.analytics.GoogleAnalytics;
+  var that = this;
 
-	var that = this;
-
-	var sett = RoundSett.analytics.GoogleAnalytics;
-	var accounts;
-
-	initialize();
-
+  initialize();
 
 	this.set = function () {
 		runCommand('set', arguments);
@@ -24,79 +14,59 @@ angular.module('round')
 		runCommand('send', arguments);
 	};
 
-	this.ecommerce = function () {
-		var args = _.toArray(arguments);
-		runCommand('ecommerce:' + args.shift(), args);
-	};
+  this.ecommerce = function (transaction) {
+    gtag('event', 'purchase', transaction);
+  };
 
-	this.sendException = function (msg, trace) {
-		that.send('exception', {
-			exDescription: msg + '\n ○ ' + trace
-		});
-	};
+  this.sendException = function(description, isFatal = false) {
+    gtag('event','exception', {
+      event_category: 'Exception',
+      event_action: 'Exception Caught',
+      event_label: description,
+      non_interaction: true,
+      fatal: isFatal,
+    });
+  };
 
+  this.pageview = function(pagePath, pageName) {
+    gtag('event','current_path', {
+      page_path: pagePath,
+      page_name: pageName ? pageName : ''
+    });
+  };
 
+  function runCommand(command, argsObj) {
+    console.log('runCommand = ', command, argsObj);
 
-	/*==================================
-	=            Shorthands            =
-	==================================*/
+    var args = Object.values(argsObj);
+    sett.accounts.forEach(account => {
+      var localArgs = angular.copy(args);
+      localArgs.unshift(
+        account.name ?
+        account.name + '.' + command :
+        command
+      );
+      gtag.apply(that, localArgs);
+    });
+  }
 
-	this.pageview = function (page) {
-		that.set('page', page);
-		that.send('pageview', {
-			page: page
-		});
-	};
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
 
-	/*-----  End of Shorthands  ------*/
+  function initialize() {
+    const gaMeasurementId = sett.accounts[0].id;
 
+    window.dataLayer = [];
+    window.gtag = gtag;
 
-	function runCommand (command, argsObj) {
-		var args = _.toArray(argsObj);
-		_(accounts).each(function (account) {
-			var localArgs = angular.copy(args);
-			localArgs.unshift(
-				account.name ?
-				account.name + '.' + command :
-				command
-			);
-			$window.ga.apply(that, localArgs);
-		});
-	}
+    gtag('js', new Date());
+    gtag('config', gaMeasurementId);
 
+    const script = document.createElement('script');
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
+    script.async = true;
 
-
-	function initialize () {
-		(function(i, s, o, g, r, a, m) {
-			i.GoogleAnalyticsObject = r;
-			i[r] = i[r] || function() {
-				(i[r].q = i[r].q || []).push(arguments);
-			}, i[r].l = 1 * new Date();
-			a = s.createElement(o),
-			m = s.getElementsByTagName(o)[0];
-			a.async = 1;
-			a.src = g;
-			m.parentNode.insertBefore(a, m);
-		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-		//pick non-duplicates from accounts
-		accounts =
-			_(sett.accounts).uniq(function (account) {
-			return account.id;
-		});
-
-		//create trackers
-		_(accounts).each(function (account) {
-			$window.ga('create', account.id, {
-				name: account.name
-			});
-			if (account.enableEcommerce) {
-				$window.ga(account.name +'.require', 'ecommerce');
-			}
-		});
-
-
-	}
-
-
+    document.head.appendChild(script);
+  }
 });
