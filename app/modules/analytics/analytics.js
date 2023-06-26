@@ -1,30 +1,32 @@
 'use strict';
 
-angular.module('round').service('rAnalytics', function Analytics(RoundSett) {
+var angular = require('angular');
+
+angular.module('round').service('rAnalytics', ['$window', 'RoundSett', function ($window, RoundSett) {
   var sett = RoundSett.analytics.GoogleAnalytics;
   var that = this;
 
   initialize();
 
-	this.set = function () {
-		runCommand('set', arguments);
-	};
+  this.set = function () {
+    runCommand('set', arguments);
+  };
 
-	this.send = function () {
-		runCommand('send', arguments);
-	};
+  this.send = function () {
+    runCommand('send', arguments);
+  };
 
   this.ecommerce = function (transaction) {
     gtag('event', 'purchase', transaction);
   };
 
-  this.sendException = function(description, isFatal = false) {
+  this.sendException = function(description, isFatal) {
     gtag('event','exception', {
       event_category: 'Exception',
       event_action: 'Exception Caught',
       event_label: description,
       non_interaction: true,
-      fatal: isFatal,
+      fatal: isFatal ? isFatal : false,
     });
   };
 
@@ -38,9 +40,9 @@ angular.module('round').service('rAnalytics', function Analytics(RoundSett) {
   function runCommand(command, argsObj) {
     console.log('runCommand = ', command, argsObj);
 
-    var args = Object.values(argsObj);
-    sett.accounts.forEach(account => {
-      var localArgs = angular.copy(args);
+    var args = Array.prototype.slice.call(argsObj);
+    sett.accounts.forEach(function(account) {
+      var localArgs = args.slice();
       localArgs.unshift(
         account.name ?
         account.name + '.' + command :
@@ -51,22 +53,22 @@ angular.module('round').service('rAnalytics', function Analytics(RoundSett) {
   }
 
   function gtag() {
-    window.dataLayer.push(arguments);
+    $window.dataLayer.push(arguments);
   }
 
   function initialize() {
-    const gaMeasurementId = sett.accounts[0].id;
+    var gaMeasurementId = sett.accounts[0].id;
 
-    window.dataLayer = [];
-    window.gtag = gtag;
+    $window.dataLayer = [];
+    $window.gtag = gtag;
 
     gtag('js', new Date());
     gtag('config', gaMeasurementId);
 
-    const script = document.createElement('script');
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
+    var script = document.createElement('script');
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaMeasurementId;
     script.async = true;
 
     document.head.appendChild(script);
   }
-});
+}]);
