@@ -1,7 +1,5 @@
 'use strict';
 
-var angular = require('angular');
-
 angular.module('round').service('rAnalytics', ['$window', 'RoundSett', function ($window, RoundSett) {
   var sett = RoundSett.analytics.GoogleAnalytics;
   var that = this;
